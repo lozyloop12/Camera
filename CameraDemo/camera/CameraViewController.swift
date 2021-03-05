@@ -39,19 +39,29 @@ class CameraViewController: UIViewController {
     }
     
     func alertCameraAccessNeeded() {
-        let settingsAppURL = URL(string: UIApplication.openSettingsURLString)!
+        let settingsAction = UIAlertAction(title: "Allow Camera", style: .default) { (_) -> Void in
+
+            guard let settingsAppURL = URL(string: UIApplication.openSettingsURLString) else {
+                       return
+                   }
+            
+            if UIApplication.shared.canOpenURL(settingsAppURL) {
+                UIApplication.shared.open(settingsAppURL, completionHandler: { (success) in
+                    print("Settings opened: \(success)") // Prints true
+                })
+            }
+        }
+        
      
          let alert = UIAlertController(
              title: "Need Camera Access",
              message: "Camera access is required to make full use of this app.",
              preferredStyle: UIAlertController.Style.alert
          )
-     
+        
+        alert.addAction(settingsAction)
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
-        alert.addAction(UIAlertAction(title: "Allow Camera", style: .cancel, handler: { (alert) -> Void in
-            UIApplication.shared.open(settingsAppURL, options: [:], completionHandler: nil)
-        }))
-    
+
         present(alert, animated: true, completion: nil)
     }
     
@@ -81,22 +91,19 @@ class CameraViewController: UIViewController {
     }
     
     func checkPermissionsPhoto() {
-        if PHPhotoLibrary.authorizationStatus() != PHAuthorizationStatus.authorized {
-            PHPhotoLibrary.requestAuthorization({ (status: PHAuthorizationStatus) -> Void in ()
-                self.handleImageController(type: 0)
-            })
-        }
-
-        if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.authorized {
-             handleImageController(type: 0)
-        } else {
+        let status = PHPhotoLibrary.authorizationStatus()
+        switch status {
+        case PHAuthorizationStatus.authorized:
+            handleImageController(type: 0)
+        default:
             PHPhotoLibrary
-                .requestAuthorization(requestAuthorizationHandler)
+                        .requestAuthorization(requestAuthorizationHandler)
         }
     }
     
     func requestAuthorizationHandler(status: PHAuthorizationStatus) {
         if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.authorized {
+            handleImageController(type: 0)
             print("Access granted to use Photo Library")
         } else {
             print("We don't have access to your Photos.")
