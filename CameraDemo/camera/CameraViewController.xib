@@ -20,7 +20,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aj5-5N-qjf">
-                    <rect key="frame" x="20" y="770" width="374" height="62"/>
+                    <rect key="frame" x="20" y="770" width="85" height="62"/>
                     <color key="backgroundColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="62" id="4kp-PF-cpB"/>
@@ -33,6 +33,18 @@
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="OJZ-79-NEf">
                     <rect key="frame" x="20" y="64" width="374" height="686"/>
                 </imageView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="O8z-Bg-AVa">
+                    <rect key="frame" x="314" y="770" width="80" height="62"/>
+                    <color key="backgroundColor" red="0.99741333720000003" green="0.54145479200000002" blue="0.54508578780000005" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="80" id="4Qf-IP-86A"/>
+                        <constraint firstAttribute="height" constant="62" id="GKN-Xl-fyy"/>
+                    </constraints>
+                    <state key="normal" title="Library"/>
+                    <connections>
+                        <action selector="SelectLibbrary:" destination="-1" eventType="touchUpInside" id="JdW-ew-M5j"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
             <constraints>
@@ -40,9 +52,11 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="OJZ-79-NEf" secondAttribute="trailing" constant="20" id="AHi-KY-jnx"/>
                 <constraint firstItem="OJZ-79-NEf" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="Df0-jp-Zet"/>
                 <constraint firstItem="OJZ-79-NEf" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="20" id="FiW-Ur-eOT"/>
+                <constraint firstItem="O8z-Bg-AVa" firstAttribute="top" secondItem="OJZ-79-NEf" secondAttribute="bottom" constant="20" id="KId-CQ-8DU"/>
                 <constraint firstItem="aj5-5N-qjf" firstAttribute="top" secondItem="OJZ-79-NEf" secondAttribute="bottom" constant="20" id="KvJ-M7-Yc5"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="aj5-5N-qjf" secondAttribute="trailing" constant="20" id="aRY-VK-NMx"/>
                 <constraint firstItem="aj5-5N-qjf" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="faf-nD-2jQ"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="O8z-Bg-AVa" secondAttribute="trailing" constant="20" id="hvv-iG-gKw"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="O8z-Bg-AVa" secondAttribute="bottom" constant="30" id="pq3-4G-55z"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <point key="canvasLocation" x="124.6376811594203" y="148.66071428571428"/>

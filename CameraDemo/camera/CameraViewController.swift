@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 class CameraViewController: UIViewController {
     
@@ -16,6 +17,7 @@ class CameraViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        checkPermissions()
         // Do any additional setup after loading the view.
     }
     
@@ -32,37 +34,58 @@ class CameraViewController: UIViewController {
             controller.delegate = self
             present(controller, animated: true, completion: nil)
         } else {
-           //errỏ camera
+           //error camera
         }
     }
     
-
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    @IBAction func SelectLibbrary(_ sender: UIButton){
+        let sourceType: UIImagePickerController.SourceType = .photoLibrary
+           if UIImagePickerController.isSourceTypeAvailable(sourceType) {
+               let photocontroller = UIImagePickerController()
+               photocontroller.delegate = self
+               photocontroller.sourceType = sourceType
+               photocontroller.allowsEditing = true
+               present(photocontroller, animated: true, completion: nil)
+           } else {
+              //error camera
+           }
     }
-    */
+    
+    func checkPermissions() {
+        if PHPhotoLibrary.authorizationStatus() != PHAuthorizationStatus.authorized {
+            PHPhotoLibrary.requestAuthorization({ (status: PHAuthorizationStatus) -> Void in ()
+            })
+        }
 
+        if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.authorized {
+        } else {
+            PHPhotoLibrary
+                .requestAuthorization(requestAuthorizationHandler)
+        }
+    }
+    
+    func requestAuthorizationHandler(status: PHAuthorizationStatus) {
+        if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.authorized {
+            print("Access granted to use Photo Library")
+        } else {
+            print("We don't have access to your Photos.")
+        }
+    }
 }
 
 extension CameraViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true, completion: nil)
-    }
-    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        picker.dismiss(animated: true, completion: nil)
-        
-        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
+        picker.dismiss(animated: true)
+
+        guard let image = info[UIImagePickerController.InfoKey.originalImage]  as? UIImage else {
             return
         }
         imageView.image = image
     }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+    
 }
-
