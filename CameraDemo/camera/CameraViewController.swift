@@ -8,6 +8,7 @@
 
 import UIKit
 import Photos
+import AVFoundation
 
 class CameraViewController: UIViewController {
     
@@ -17,7 +18,6 @@ class CameraViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        checkPermissions()
         // Do any additional setup after loading the view.
     }
     
@@ -26,38 +26,69 @@ class CameraViewController: UIViewController {
         imageView.backgroundColor = .secondarySystemBackground
     }
     
-    @IBAction func TakePicture(_ sender: UIButton){        
-        let sourceType: UIImagePickerController.SourceType = .camera
+    func handleImageController(type: Int){
+        let sourceType: UIImagePickerController.SourceType = type == 1 ? .camera : .photoLibrary
         if UIImagePickerController.isSourceTypeAvailable(sourceType) {
             let controller = UIImagePickerController()
             controller.sourceType = sourceType
             controller.delegate = self
             present(controller, animated: true, completion: nil)
         } else {
-           //error camera
+           //error
         }
     }
     
-    @IBAction func SelectLibbrary(_ sender: UIButton){
-        let sourceType: UIImagePickerController.SourceType = .photoLibrary
-           if UIImagePickerController.isSourceTypeAvailable(sourceType) {
-               let photocontroller = UIImagePickerController()
-               photocontroller.delegate = self
-               photocontroller.sourceType = sourceType
-               photocontroller.allowsEditing = true
-               present(photocontroller, animated: true, completion: nil)
-           } else {
-              //error camera
-           }
+    func alertCameraAccessNeeded() {
+        let settingsAppURL = URL(string: UIApplication.openSettingsURLString)!
+     
+         let alert = UIAlertController(
+             title: "Need Camera Access",
+             message: "Camera access is required to make full use of this app.",
+             preferredStyle: UIAlertController.Style.alert
+         )
+     
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Allow Camera", style: .cancel, handler: { (alert) -> Void in
+            UIApplication.shared.open(settingsAppURL, options: [:], completionHandler: nil)
+        }))
+    
+        present(alert, animated: true, completion: nil)
     }
     
-    func checkPermissions() {
+    @IBAction func TakePicture(_ sender: UIButton){        
+        checkPermissionsCamera()
+    }
+    
+    @IBAction func SelectLibbrary(_ sender: UIButton){
+        checkPermissionsPhoto()
+    }
+    
+    func checkPermissionsCamera(){
+        let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+        
+        switch cameraAuthorizationStatus {
+        case .notDetermined: requestCameraPermission()
+        case .authorized: handleImageController(type: 1)
+        case .restricted, .denied: alertCameraAccessNeeded()
+        }
+    }
+    
+    func requestCameraPermission() {
+        AVCaptureDevice.requestAccess(for: .video, completionHandler: {accessGranted in
+            guard accessGranted == true else { return }
+            self.handleImageController(type: 1)
+        })
+    }
+    
+    func checkPermissionsPhoto() {
         if PHPhotoLibrary.authorizationStatus() != PHAuthorizationStatus.authorized {
             PHPhotoLibrary.requestAuthorization({ (status: PHAuthorizationStatus) -> Void in ()
+                self.handleImageController(type: 0)
             })
         }
 
         if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.authorized {
+             handleImageController(type: 0)
         } else {
             PHPhotoLibrary
                 .requestAuthorization(requestAuthorizationHandler)
